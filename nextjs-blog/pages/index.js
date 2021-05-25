@@ -1,8 +1,18 @@
 import Head from 'next/head'
 import Layout, { siteTitle} from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
+import { getSortedPostsData } from '../lib/posts'
 
-export default function Home() {
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData()
+  return {
+    props: {
+      allPostsData
+    }
+  }
+}
+
+export default function Home({ allPostsData }) {
   return (
     <Layout home>
       <Head>
@@ -12,6 +22,21 @@ export default function Home() {
         <p>CK is a senior full-stack web developer based in Pittsburgh, PA. His dog is snoring underneath his desk right now.</p>
         <p className={utilStyles.headingSpecial}>Ruby's snoring is an omnipresent sound that will live on forever.</p>
         <p>I left off <a href="https://nextjs.org/learn/basics/data-fetching" target="_blank">here</a>.</p>
+      </section>
+
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+            <li className={utilStyles.listItem} key={id}>
+              {title}
+              <br />
+              {id}
+              <br />
+              {date}
+            </li>
+          ))}
+        </ul>
       </section>
     </Layout>
   )
